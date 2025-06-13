@@ -52,10 +52,8 @@ class SpellSelectView(View):
 async def handle_spell_selection(inter, character_name, char_class, level, max_spells=None, stat_mod=3):
     limits = spell_limits.get(char_class)
     if not limits:
-        if not inter.response.is_done():
-            await inter.response.send_message("Для этого класса не указаны ограничения на заклинания.", ephemeral=True)
-        else:
-            await inter.followup.send("Для этого класса не указаны ограничения на заклинания.", ephemeral=True)
+        # Класс не использует магию — просто молча выходим
+        print(f"[INFO] Класс {char_class} не использует заклинания на уровне {level}.")
         return []
 
     if max_spells is None:
