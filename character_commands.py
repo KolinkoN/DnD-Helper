@@ -1,6 +1,7 @@
 import disnake
 import random
 import json
+import sqlite3
 import leveling_system
 from disnake.ext import commands
 from disnake.ui import View, Button
@@ -15,8 +16,23 @@ with open("races.json", "r", encoding="utf-8") as f:
 races_by_name = {race["name"]: race for race in races_data}
 with open("hit_dice.json", "r") as f:
     HIT_DICE = json.load(f)
+
 def get_modifier(stat_value: int) -> int:
     return (stat_value - 10) // 2
+
+def get_user_character_names():
+    # Возвращаем имена персонажей из базы для всех пользователей (используется для autocomplete)
+    with sqlite3.connect("bot.db") as conn:
+        cursor = conn.cursor()
+        result = cursor.execute("SELECT name FROM characters").fetchall()
+    return [row[0] for row in result]
+
+def get_characters_by_name(name_part):
+    with sqlite3.connect("bot.db") as conn:
+        cursor = conn.cursor()
+        like_pattern = f"%{name_part}%"
+        result = cursor.execute("SELECT name FROM characters WHERE name LIKE ?", (like_pattern,)).fetchall()
+    return [row[0] for row in result]
 
 def roll_stat():
     rolls = [random.randint(1, 6) for _ in range(4)]
@@ -86,8 +102,8 @@ def setup(bot, conn, cursor, races_by_name):
             con_value = self.stats[2][0]
             con_mod = get_modifier(con_value)
             roll = random.randint(1, hit_die)  # <-- теперь roll генерируется и используется
-            hp_roll = roll + con_mod
-            hp_text = f"🎯 HP: 1d{hit_die} (выпало {roll}) + модификатор {con_mod:+} = **{hp_roll}**"
+            hp_roll = hit_die + con_mod
+            hp_text = f"🎯 HP: макс. 1d{hit_die} + модификатор {con_mod:+} = **{hp_roll}**"
 
             embed = disnake.Embed(
                 title=f"🎲 Характеристики для {self.name}",
@@ -119,12 +135,38 @@ def setup(bot, conn, cursor, races_by_name):
 
             await inter.response.defer()
 
-            new_view = CharacterRollView(inter, self.name, self.char_class, self.race, self.size, self.race_data)
-            new_view.reroll_count = self.reroll_count + 1
-            # НЕ копируем hp_roll и hp_text, они пересчитаются при генерации заново
-            await new_view.generate_and_show()
+            # Генерируем новые характеристики
+            self.reroll_count += 1
+            self.stats = [roll_stat() for _ in range(6)]
+            stat_names = ["Сила", "Ловкость", "Телосложение", "Интеллект", "Мудрость", "Харизма"]
 
-            self.stop()
+            detailed = [
+                f"{i + 1}. **{stat_names[i]}**: 🎲 {', '.join(map(str, rolls))} → **{value} ({get_modifier(value):+})**"
+                for i, (value, rolls) in enumerate(self.stats)
+            ]
+
+            hit_die = HIT_DICE.get(self.char_class, 8)
+            con_value = self.stats[2][0]
+            con_mod = get_modifier(con_value)
+            roll = random.randint(1, hit_die)
+            hp_roll = hit_die + con_mod
+            hp_text = f"🎯 HP: макс. 1d{hit_die} + модификатор {con_mod:+} = **{hp_roll}**"
+
+            embed = disnake.Embed(
+                title=f"🎲 Характеристики для {self.name}",
+                description="\n".join(detailed + ["", hp_text]),
+                color=0x3498db
+            )
+            embed.set_footer(
+                text=f"Метод: 4d6, убрать минимум | Перебросов осталось: {self.max_rerolls - self.reroll_count}"
+            )
+
+            self.hp_roll = hp_roll
+            self.hp_text = hp_text
+
+            # Редактируем существующее сообщение, а не отправляем новое
+            await inter.edit_original_message(embed=embed, view=self)
+
         @disnake.ui.button(label="✅ Принять", style=disnake.ButtonStyle.success)
         async def accept(self, button: Button, inter: disnake.MessageInteraction):
             if inter.user.id != self.inter.user.id:
@@ -353,67 +395,105 @@ def setup(bot, conn, cursor, races_by_name):
         await inter.response.send_message(embed=embed, ephemeral=True)
 
     def get_character_names():
-        cursor.execute("SELECT name FROM characters")
-        return [row[0] for row in cursor.fetchall()]
+        with sqlite3.connect("bot.db") as conn:
+            cursor = conn.cursor()
+            result = cursor.execute("SELECT name FROM characters").fetchall()
+        return [row[0] for row in result]
 
-    @bot.slash_command(name="level_up", description="Повысить уровень персонажа (только для Мастера)",
-                       guild_ids=[1378783701139198083])
+    @bot.slash_command(
+        name="level_up",
+        description="Повысить уровень персонажа (только для Мастера)",
+        guild_ids=[1378783701139198083]
+    )
     @commands.has_role("Мастер")
     async def level_up(
             inter: disnake.ApplicationCommandInteraction,
             character_name: str = commands.Param(
-                name="имя_персонажа",
+                name="character_name",
                 description="Выберите имя персонажа",
-                choices=get_character_names()
+                autocomplete=True
             )
     ):
-        character = cursor.execute(
-            "SELECT level, hp, con, char_class FROM characters WHERE name = ?", (character_name,)
-        ).fetchone()
+        # Открываем соединение с базой прямо здесь, чтобы данные были актуальны
+        with sqlite3.connect("bot.db") as conn_local:
+            cursor_local = conn_local.cursor()
 
-        if not character:
-            await inter.response.send_message(f"Персонаж `{character_name}` не найден.", ephemeral=True)
-            return
+            character = cursor_local.execute(
+                "SELECT level, hp, constitution, char_class, user_id FROM characters WHERE name = ?",
+                (character_name,)
+            ).fetchone()
 
-        current_level, current_hp, con_stat, char_class = character
+            if not character:
+                await inter.response.send_message(f"Персонаж `{character_name}` не найден.", ephemeral=True)
+                return
 
-        if current_level >= 20:
-            await inter.response.send_message(f"❌ `{character_name}` уже достиг максимального уровня (20).",
-                                              ephemeral=True)
-            return
+            current_level, current_hp, con_stat, char_class, user_id = character
 
-        new_level = current_level + 1
+            if current_level >= 20:
+                await inter.response.send_message(
+                    f"❌ `{character_name}` уже достиг максимального уровня (20).",
+                    ephemeral=True
+                )
+                return
 
-        hit_die = HIT_DICE.get(char_class.lower(), 8)
+            new_level = current_level + 1
 
-        con_mod = get_modifier(con_stat)
+            HIT_DICE = {
+                "barbarian": 12, "fighter": 10, "paladin": 10, "ranger": 10,
+                "cleric": 8, "druid": 8, "bard": 8, "monk": 8,
+                "rogue": 8, "artificer": 8, "wizard": 6, "sorcerer": 6, "warlock": 8
+            }
 
-        roll = random.randint(1, hit_die)
+            hit_die = HIT_DICE.get(char_class.lower())
+            if hit_die is None:
+                await inter.response.send_message(f"⚠️ Неизвестный класс `{char_class}`.", ephemeral=True)
+                return
 
-        hp_gain = max(1, roll + con_mod)
+            con_mod = get_modifier(con_stat)
+            roll = random.randint(1, hit_die)
+            hp_gain = max(1, roll + con_mod)
+            new_hp = current_hp + hp_gain
 
-        new_hp = current_hp + hp_gain
+            cursor_local.execute(
+                "UPDATE characters SET level = ?, hp = ? WHERE name = ?",
+                (new_level, new_hp, character_name)
+            )
 
-        # Обновляем уровень и HP персонажа в базе
-        cursor.execute(
-            "UPDATE characters SET level = ?, hp = ? WHERE name = ?",
-            (new_level, new_hp, character_name)
+            MAGIC_CLASSES = {
+                "wizard", "sorcerer", "cleric", "druid", "warlock", "bard", "paladin", "ranger", "artificer"
+            }
+
+            selected_spells = []
+            if char_class.lower() in MAGIC_CLASSES:
+                # Предполагается, что handle_spell_selection существует и принимает эти параметры
+                selected_spells = await handle_spell_selection(
+                    inter, character_name, char_class, new_level, max_spells=min(10, 2 + (new_level - 1))
+                )
+                if selected_spells:
+                    cursor_local.execute("DELETE FROM character_spells WHERE user_id = ?", (user_id,))
+                    for spell in selected_spells:
+                        cursor_local.execute(
+                            "INSERT INTO character_spells (user_id, spell_name) VALUES (?, ?)",
+                            (user_id, spell)
+                        )
+
+            conn_local.commit()
+
+        msg = (
+            f"✅ Уровень персонажа `{character_name}` повышен до {new_level}!\n"
+            f"❤️ HP увеличено на {hp_gain} (🎲 {roll} + CON {con_mod}) и теперь составляет {new_hp}."
         )
+        if selected_spells:
+            msg += f"\n✨ Выбраны заклинания: {', '.join(selected_spells)}"
 
-        # Обновление заклинаний (если есть)
-        char_info = cursor.execute("SELECT user_id FROM characters WHERE name = ?", (character_name,)).fetchone()
-        if char_info:
-            user_id = char_info[0]
-            selected_spells = await handle_spell_selection(inter, character_name, char_class, new_level, max_spells=2)
-            for spell in selected_spells:
-                cursor.execute("INSERT INTO character_spells (user_id, spell_name) VALUES (?, ?)", (user_id, spell))
+        await inter.response.send_message(msg, ephemeral=False)
 
-        conn.commit()
-
-        await inter.response.send_message(
-            f"✅ Уровень `{character_name}` повышен до {new_level}! HP увеличено на {hp_gain} и теперь составляет {new_hp}.",
-            ephemeral=False
-        )
+    # Автокомплит для character_name в команде level_up
+    @level_up.autocomplete("character_name")
+    async def autocomplete_character_name(inter: disnake.ApplicationCommandInteraction, user_input: str):
+        matches = get_characters_by_name(user_input)
+        # Возвращаем максимум 20 вариантов
+        return [disnake.OptionChoice(name=match, value=match) for match in matches[:20]]
 
     @bot.slash_command(name="delete_character", description="Удалить персонажа")
     async def delete_character(inter: disnake.ApplicationCommandInteraction):

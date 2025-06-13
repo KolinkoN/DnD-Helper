@@ -66,10 +66,9 @@ class SpellSelectView(View):
         self.stop()
 
 
-async def handle_spell_selection(inter, character_name, char_class, level, max_spells=None, stat_mod=3):
+async def handle_spell_selection(inter, character_name, char_class, level, max_spells=None, stat_mod=3, existing_spells=None):
     limits = spell_limits.get(char_class)
     if not limits:
-        # Класс не использует магию — просто молча выходим
         print(f"[INFO] Класс {char_class} не использует заклинания на уровне {level}.")
         return []
 
@@ -92,6 +91,10 @@ async def handle_spell_selection(inter, character_name, char_class, level, max_s
         name for name, spell in all_spells.items()
         if char_class in spell.get("classes", []) and spell["level"] <= level and spell["level"] > 0
     ]
+
+    # Исключаем уже имеющиеся заклинания из доступных
+    if existing_spells:
+        available_spells = [spell for spell in available_spells if spell not in existing_spells]
 
     if not available_spells or max_spells == 0:
         if not inter.response.is_done():
