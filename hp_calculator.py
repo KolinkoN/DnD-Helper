@@ -1,8 +1,6 @@
 import json
 
 # Загружаем модификаторы
-with open("modifiers.json", "r", encoding="utf-8") as f:
-    MODIFIERS = json.load(f)["ability_scores_to_modifiers"]
 
 # Таблица базовых хитов по классу на 1 уровне
 HIT_DICE_BY_CLASS = {
@@ -22,8 +20,8 @@ HIT_DICE_BY_CLASS = {
 }
 
 
-def get_modifier(score: int) -> int:
-    return MODIFIERS.get(str(score), (score - 10) // 2)
+def get_modifier(stat_value: int) -> int:
+    return (stat_value - 10) // 2
 
 
 def calculate_starting_hp(char_class: str, con_score: int) -> int:
@@ -31,5 +29,4 @@ def calculate_starting_hp(char_class: str, con_score: int) -> int:
     if hit_die is None:
         raise ValueError(f"Неизвестный класс: {char_class}")
 
-    con_mod = get_modifier(con_score)
-    return hit_die + con_mod
+    return hit_die + get_modifier(con_score)

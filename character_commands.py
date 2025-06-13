@@ -15,6 +15,8 @@ with open("races.json", "r", encoding="utf-8") as f:
 races_by_name = {race["name"]: race for race in races_data}
 with open("hit_dice.json", "r") as f:
     HIT_DICE = json.load(f)
+def get_modifier(stat_value: int) -> int:
+    return (stat_value - 10) // 2
 
 def roll_stat():
     rolls = [random.randint(1, 6) for _ in range(4)]
@@ -83,7 +85,8 @@ def setup(bot, conn, cursor, races_by_name):
             hit_die = HIT_DICE.get(self.char_class, 8)
             con_value = self.stats[2][0]
             con_mod = get_modifier(con_value)
-            hp_roll = hit_die + con_mod
+            roll = random.randint(1, hit_die)  # <-- теперь roll генерируется и используется
+            hp_roll = roll + con_mod
             hp_text = f"🎯 HP: 1d{hit_die} (выпало {roll}) + модификатор {con_mod:+} = **{hp_roll}**"
 
             embed = disnake.Embed(
@@ -95,20 +98,11 @@ def setup(bot, conn, cursor, races_by_name):
                 text=f"Метод: 4d6, убрать минимум | Перебросов осталось: {self.max_rerolls - self.reroll_count}"
             )
 
-            if self.message:
-                try:
-                    await self.message.edit(embed=embed, view=self)
-                except disnake.NotFound:
-                    self.message = await self.inter.channel.send(embed=embed, view=self)
-            else:
-                if not self.inter.response.is_done():
-                    self.message = await self.inter.response.send_message(embed=embed, view=self, ephemeral=True)
-                else:
-                    try:
-                        self.message = await self.inter.original_message()
-                        await self.message.edit(embed=embed, view=self)
-                    except disnake.NotFound:
-                        self.message = await self.inter.channel.send(embed=embed, view=self)
+            try:
+                await self.inter.response.send_message(embed=embed, view=self, ephemeral=True)
+                self.message = await self.inter.original_message()
+            except disnake.InteractionResponded:
+                self.message = await self.inter.followup.send(embed=embed, view=self, ephemeral=True)
 
             self.hp_roll = hp_roll  # сохраняем для использования при принятии
             self.hp_text = hp_text
@@ -223,7 +217,7 @@ def setup(bot, conn, cursor, races_by_name):
                     await roll_view.generate_and_show()
                 else:
                     size_view = SizeSelectView(inter, view.name, self.class_name, view.race, size_options, race_data)
-                    await inter.channel.send("Выберите размер персонажа:", view=size_view)
+                    await inter.followup.send("Выберите размер персонажа:", view=size_view, ephemeral=True)
                 view.stop()
 
         async def on_timeout(self):
@@ -235,6 +229,7 @@ def setup(bot, conn, cursor, races_by_name):
     @bot.slash_command(name="create_character", description="Создать персонажа", guild_ids=[1378783701139198083])
     async def create_character(inter: disnake.ApplicationCommandInteraction, name: str,
                                race: str = commands.Param(autocomplete=True)):
+        await inter.response.defer(ephemeral=True)
         exists = cursor.execute("SELECT 1 FROM characters WHERE user_id = ?", (inter.user.id,)).fetchone()
         if exists:
             if not inter.response.is_done():
@@ -253,9 +248,6 @@ def setup(bot, conn, cursor, races_by_name):
 
         view = ClassSelectView(inter, name, race, race_data)
 
-        # Здесь заменяем:
-        # await inter.response.send_message(content="Выберите класс персонажа:", view=view, ephemeral=True)
-        # на проверку, была ли уже отправлена реакция:
         if not inter.response.is_done():
             await inter.response.send_message(content="Выберите класс персонажа:", view=view, ephemeral=True)
         else:
@@ -363,9 +355,6 @@ def setup(bot, conn, cursor, races_by_name):
     def get_character_names():
         cursor.execute("SELECT name FROM characters")
         return [row[0] for row in cursor.fetchall()]
-
-    def get_modifier(stat_value: int) -> int:
-        return (stat_value - 10) // 2
 
     @bot.slash_command(name="level_up", description="Повысить уровень персонажа (только для Мастера)",
                        guild_ids=[1378783701139198083])
