@@ -1,371 +1,371 @@
 [
-  {
-    "name": "Aarakocra",
-    "size": ["Medium"],
-    "speed_walk": 25,
-    "speed_fly": 50,
-    "speed_swim": null,
-    "bonus_type": "Custom",
-    "bonus_value": {"DEX": 2, "WIS": 1}
-  },
-  {
-    "name": "Aasimar",
-    "size": ["Medium"],
-    "speed_walk": 30,
-    "speed_fly": null,
-    "speed_swim": null,
-    "bonus_type": "Custom",
-    "bonus_value": {"CHA": 2}
-  },
-  {
-    "name": "Autognome",
-    "size": ["Small"],
-    "speed_walk": 25,
-    "speed_fly": null,
-    "speed_swim": null,
-    "bonus_type": "Custom",
-    "bonus_value": {"INT": 2}
-  },
-  {
-    "name": "Astral elf",
-    "size": ["Medium"],
-    "speed_walk": 30,
-    "speed_fly": null,
-    "speed_swim": null,
-    "bonus_type": "Custom",
-    "bonus_value": {"DEX": 2, "INT": 1}
-  },
-  {
-    "name": "Bugbear",
-    "size": ["Medium"],
-    "speed_walk": 30,
-    "speed_fly": null,
-    "speed_swim": null,
-    "bonus_type": "Custom",
-    "bonus_value": {"STR": 2, "DEX": 1}
-  },
-  {
-    "name": "Vedalken",
-    "size": ["Medium"],
-    "speed_walk": 30,
-    "speed_fly": null,
-    "speed_swim": null,
-    "bonus_type": "Custom",
-    "bonus_value": {"INT": 2, "WIS": 1}
-  },
-  {
-    "name": "Verdan",
-    "size": ["Medium"],
-    "speed_walk": 30,
-    "speed_fly": null,
-    "speed_swim": null,
-    "bonus_type": "Custom",
-    "bonus_value": {"CON": 2}
-  },
-  {
-    "name": "Gith",
-    "size": ["Medium"],
-    "speed_walk": 30,
-    "speed_fly": null,
-    "speed_swim": null,
-    "bonus_type": "Custom",
-    "bonus_value": {"INT": 1, "WIS": 1}
-  },
-  {
-    "name": "Githzerai",
-    "size": ["Medium"],
-    "speed_walk": 30,
-    "speed_fly": null,
-    "speed_swim": null,
-    "bonus_type": "Custom",
-    "bonus_value": {"WIS": 2, "DEX": 1}
-  },
-  {
-    "name": "Githyanki",
-    "size": ["Medium"],
-    "speed_walk": 30,
-    "speed_fly": null,
-    "speed_swim": null,
-    "bonus_type": "Custom",
-    "bonus_value": {"STR": 2, "INT": 1}
-  },
-  {
-    "name": "Gnome",
-    "size": ["Small"],
-    "speed_walk": 25,
-    "speed_fly": null,
-    "speed_swim": null,
-    "bonus_type": "Custom",
-    "bonus_value": {"INT": 2}
-  },
-  {
-    "name": "Goblin",
-    "size": ["Small"],
-    "speed_walk": 30,
-    "speed_fly": null,
-    "speed_swim": null,
-    "bonus_type": "Custom",
-    "bonus_value": {"DEX": 2}
-  },
-  {
-    "name": "Goliath",
-    "size": ["Medium"],
-    "speed_walk": 30,
-    "speed_fly": null,
-    "speed_swim": null,
-    "bonus_type": "Custom",
-    "bonus_value": {"STR": 2, "CON": 1}
-  },
-  {
-    "name": "Grung",
-    "size": ["Small"],
-    "speed_walk": 25,
-    "speed_fly": null,
-    "speed_swim": null,
-    "bonus_type": "Custom",
-    "bonus_value": {"DEX": 2, "WIS": 1}
-  },
-  {
-    "name": "Dwarf",
-    "size": ["Medium"],
-    "speed_walk": 25,
-    "speed_fly": null,
-    "speed_swim": null,
-    "bonus_type": "Custom",
-    "bonus_value": {"CON": 2}
-  },
-  {
-    "name": "Genasi",
-    "size": ["Medium"],
-    "speed_walk": 30,
-    "speed_fly": null,
-    "speed_swim": null,
-    "bonus_type": "Custom",
-    "bonus_value": {"CON": 2}
-  },
-  {
-    "name": "Dragonborn",
-    "size": ["Medium"],
-    "speed_walk": 30,
-    "speed_fly": null,
-    "speed_swim": null,
-    "bonus_type": "Custom",
-    "bonus_value": {"STR": 2, "CHA": 1}
-  },
-  {
-    "name": "Harengon",
-    "size": ["Medium"],
-    "speed_walk": 30,
-    "speed_fly": null,
-    "speed_swim": null,
-    "bonus_type": "Custom",
-    "bonus_value": {"DEX": 2, "WIS": 1}
-  },
-  {
-    "name": "Kalashtar",
-    "size": ["Medium"],
-    "speed_walk": 30,
-    "speed_fly": null,
-    "speed_swim": null,
-    "bonus_type": "Custom",
-    "bonus_value": {"WIS": 2, "CHA": 1}
-  },
-  {
-    "name": "Kenku",
-    "size": ["Medium"],
-    "speed_walk": 30,
-    "speed_fly": null,
-    "speed_swim": null,
-    "bonus_type": "Custom",
-    "bonus_value": {"DEX": 2}
-  },
-  {
-    "name": "Centaur",
-    "size": ["Large"],
-    "speed_walk": 40,
-    "speed_fly": null,
-    "speed_swim": null,
-    "bonus_type": "Custom",
-    "bonus_value": {"STR": 2, "WIS": 1}
-  },
-  {
-    "name": "Kobold",
-    "size": ["Small"],
-    "speed_walk": 30,
-    "speed_fly": null,
-    "speed_swim": null,
-    "bonus_type": "Custom",
-    "bonus_value": {"DEX": 2}
-  },
-  {
-    "name": "Leonin",
-    "size": ["Medium"],
-    "speed_walk": 35,
-    "speed_fly": null,
-    "speed_swim": null,
-    "bonus_type": "Custom",
-    "bonus_value": {"STR": 2, "CON": 1}
-  },
-  {
-    "name": "Locathah",
-    "size": ["Medium"],
-    "speed_walk": 30,
-    "speed_fly": null,
-    "speed_swim": 30,
-    "bonus_type": "Custom",
-    "bonus_value": {"STR": 2, "WIS": 1}
-  },
-  {
-    "name": "Lizardfolk",
-    "size": ["Medium"],
-    "speed_walk": 30,
-    "speed_fly": null,
-    "speed_swim": 30,
-    "bonus_type": "Custom",
-    "bonus_value": {"CON": 2, "WIS": 1}
-  },
-  {
-    "name": "Minotaur",
-    "size": ["Medium"],
-    "speed_walk": 30,
-    "speed_fly": null,
-    "speed_swim": null,
-    "bonus_type": "Custom",
-    "bonus_value": {"STR": 2, "CON": 1}
-  },
-  {
-    "name": "Orc",
-    "size": ["Medium"],
-    "speed_walk": 30,
-    "speed_fly": null,
-    "speed_swim": null,
-    "bonus_type": "Custom",
-    "bonus_value": {"STR": 2, "CON": 1}
-  },
-  {
-    "name": "Half-orc",
-    "size": ["Medium"],
-    "speed_walk": 30,
-    "speed_fly": null,
-    "speed_swim": null,
-    "bonus_type": "Custom",
-    "bonus_value": {"STR": 2, "CON": 1}
-  },
-  {
-    "name": "Halfling",
-    "size": ["Small"],
-    "speed_walk": 25,
-    "speed_fly": null,
-    "speed_swim": null,
-    "bonus_type": "Custom",
-    "bonus_value": {"DEX": 2}
-  },
-  {
-    "name": "Half-elf",
-    "size": ["Medium"],
-    "speed_walk": 30,
-    "speed_fly": null,
-    "speed_swim": null,
-    "bonus_type": "Custom",
-    "bonus_value": {"CHA": 2, "Any": 1}
-  },
-  {
-    "name": "Satyr",
-    "size": ["Medium"],
-    "speed_walk": 30,
-    "speed_fly": null,
-    "speed_swim": null,
-    "bonus_type": "Custom",
-    "bonus_value": {"CHA": 2, "DEX": 1}
-  },
-  {
-    "name": "Owlin",
-    "size": ["Medium"],
-    "speed_walk": 30,
-    "speed_fly": 30,
-    "speed_swim": null,
-    "bonus_type": "Custom",
-    "bonus_value": {"DEX": 2, "WIS": 1}
-  },
-  {
-    "name": "Tabaxi",
-    "size": ["Medium"],
-    "speed_walk": 30,
-    "speed_fly": null,
-    "speed_swim": null,
-    "bonus_type": "Custom",
-    "bonus_value": {"DEX": 2, "CHA": 1}
-  },
-  {
-    "name": "Tiefling",
-    "size": ["Medium"],
-    "speed_walk": 30,
-    "speed_fly": null,
-    "speed_swim": null,
-    "bonus_type": "Custom",
-    "bonus_value": {"CHA": 2, "INT": 1}
-  },
-  {
-    "name": "Tortle",
-    "size": ["Medium"],
-    "speed_walk": 30,
-    "speed_fly": null,
-    "speed_swim": null,
-    "bonus_type": "Custom",
-    "bonus_value": {"STR": 2, "CON": 1}
-  },
-  {
-    "name": "Triton",
-    "size": ["Medium"],
-    "speed_walk": 30,
-    "speed_fly": null,
-    "speed_swim": 30,
-    "bonus_type": "Custom",
-    "bonus_value": {"STR": 1, "CON": 1, "CHA": 1}
-  },
-  {
-    "name": "Firbolg",
-    "size": ["Medium"],
-    "speed_walk": 30,
-    "speed_fly": null,
-    "speed_swim": null,
-    "bonus_type": "Custom",
-    "bonus_value": {"STR": 1, "WIS": 2}
-  },
-  {
-    "name": "Fairy",
-    "size": ["Tiny"],
-    "speed_walk": 30,
-    "speed_fly": 30,
-    "speed_swim": null,
-    "bonus_type": "Custom",
-    "bonus_value": {"CHA": 2}
-  },
-  {
-    "name": "Human",
-    "size": ["Medium"],
-    "speed_walk": 30,
-    "speed_fly": null,
-    "speed_swim": null,
-    "bonus_type": "AllStats",
-    "bonus_value": "1"
-  },
-  {
-    "name": "Elf",
-    "size": ["Medium"],
-    "speed_walk": 30,
-    "speed_fly": null,
-    "speed_swim": null,
-    "bonus_type": "Custom",
-    "bonus_value": {"DEX": 2}
-  },
-  {
-    "name": "Yuan‑ti Pureblood",
-    "size": ["Medium"],
-    "speed_walk": 30,
-    "speed_fly": null,
-    "speed_swim": null,
-    "bonus_type": "Custom",
-    "bonus_value": {"CHA": 2, "INT": 1}
-  }
+    {
+        "name": "Aarakocra",
+        "size": ["Medium"],
+        "speed_walk": 25,
+        "speed_fly": 50,
+        "speed_swim": null,
+        "bonus_type": "Custom",
+        "bonus_value": { "DEX": 2, "WIS": 1 }
+    },
+    {
+        "name": "Aasimar",
+        "size": ["Medium"],
+        "speed_walk": 30,
+        "speed_fly": null,
+        "speed_swim": null,
+        "bonus_type": "Custom",
+        "bonus_value": { "CHA": 2 }
+    },
+    {
+        "name": "Autognome",
+        "size": ["Small"],
+        "speed_walk": 25,
+        "speed_fly": null,
+        "speed_swim": null,
+        "bonus_type": "Custom",
+        "bonus_value": { "INT": 2 }
+    },
+    {
+        "name": "Astral elf",
+        "size": ["Medium"],
+        "speed_walk": 30,
+        "speed_fly": null,
+        "speed_swim": null,
+        "bonus_type": "Custom",
+        "bonus_value": { "DEX": 2, "INT": 1 }
+    },
+    {
+        "name": "Bugbear",
+        "size": ["Medium"],
+        "speed_walk": 30,
+        "speed_fly": null,
+        "speed_swim": null,
+        "bonus_type": "Custom",
+        "bonus_value": { "STR": 2, "DEX": 1 }
+    },
+    {
+        "name": "Vedalken",
+        "size": ["Medium"],
+        "speed_walk": 30,
+        "speed_fly": null,
+        "speed_swim": null,
+        "bonus_type": "Custom",
+        "bonus_value": { "INT": 2, "WIS": 1 }
+    },
+    {
+        "name": "Verdan",
+        "size": ["Medium"],
+        "speed_walk": 30,
+        "speed_fly": null,
+        "speed_swim": null,
+        "bonus_type": "Custom",
+        "bonus_value": { "CON": 2 }
+    },
+    {
+        "name": "Gith",
+        "size": ["Medium"],
+        "speed_walk": 30,
+        "speed_fly": null,
+        "speed_swim": null,
+        "bonus_type": "Custom",
+        "bonus_value": { "INT": 1, "WIS": 1 }
+    },
+    {
+        "name": "Githzerai",
+        "size": ["Medium"],
+        "speed_walk": 30,
+        "speed_fly": null,
+        "speed_swim": null,
+        "bonus_type": "Custom",
+        "bonus_value": { "WIS": 2, "DEX": 1 }
+    },
+    {
+        "name": "Githyanki",
+        "size": ["Medium"],
+        "speed_walk": 30,
+        "speed_fly": null,
+        "speed_swim": null,
+        "bonus_type": "Custom",
+        "bonus_value": { "STR": 2, "INT": 1 }
+    },
+    {
+        "name": "Gnome",
+        "size": ["Small"],
+        "speed_walk": 25,
+        "speed_fly": null,
+        "speed_swim": null,
+        "bonus_type": "Custom",
+        "bonus_value": { "INT": 2 }
+    },
+    {
+        "name": "Goblin",
+        "size": ["Small"],
+        "speed_walk": 30,
+        "speed_fly": null,
+        "speed_swim": null,
+        "bonus_type": "Custom",
+        "bonus_value": { "DEX": 2 }
+    },
+    {
+        "name": "Goliath",
+        "size": ["Medium"],
+        "speed_walk": 30,
+        "speed_fly": null,
+        "speed_swim": null,
+        "bonus_type": "Custom",
+        "bonus_value": { "STR": 2, "CON": 1 }
+    },
+    {
+        "name": "Grung",
+        "size": ["Small"],
+        "speed_walk": 25,
+        "speed_fly": null,
+        "speed_swim": null,
+        "bonus_type": "Custom",
+        "bonus_value": { "DEX": 2, "WIS": 1 }
+    },
+    {
+        "name": "Dwarf",
+        "size": ["Medium"],
+        "speed_walk": 25,
+        "speed_fly": null,
+        "speed_swim": null,
+        "bonus_type": "Custom",
+        "bonus_value": { "CON": 2 }
+    },
+    {
+        "name": "Genasi",
+        "size": ["Medium"],
+        "speed_walk": 30,
+        "speed_fly": null,
+        "speed_swim": null,
+        "bonus_type": "Custom",
+        "bonus_value": { "CON": 2 }
+    },
+    {
+        "name": "Dragonborn",
+        "size": ["Medium"],
+        "speed_walk": 30,
+        "speed_fly": null,
+        "speed_swim": null,
+        "bonus_type": "Custom",
+        "bonus_value": { "STR": 2, "CHA": 1 }
+    },
+    {
+        "name": "Harengon",
+        "size": ["Medium"],
+        "speed_walk": 30,
+        "speed_fly": null,
+        "speed_swim": null,
+        "bonus_type": "Custom",
+        "bonus_value": { "DEX": 2, "WIS": 1 }
+    },
+    {
+        "name": "Kalashtar",
+        "size": ["Medium"],
+        "speed_walk": 30,
+        "speed_fly": null,
+        "speed_swim": null,
+        "bonus_type": "Custom",
+        "bonus_value": { "WIS": 2, "CHA": 1 }
+    },
+    {
+        "name": "Kenku",
+        "size": ["Medium"],
+        "speed_walk": 30,
+        "speed_fly": null,
+        "speed_swim": null,
+        "bonus_type": "Custom",
+        "bonus_value": { "DEX": 2 }
+    },
+    {
+        "name": "Centaur",
+        "size": ["Large"],
+        "speed_walk": 40,
+        "speed_fly": null,
+        "speed_swim": null,
+        "bonus_type": "Custom",
+        "bonus_value": { "STR": 2, "WIS": 1 }
+    },
+    {
+        "name": "Kobold",
+        "size": ["Small"],
+        "speed_walk": 30,
+        "speed_fly": null,
+        "speed_swim": null,
+        "bonus_type": "Custom",
+        "bonus_value": { "DEX": 2 }
+    },
+    {
+        "name": "Leonin",
+        "size": ["Medium"],
+        "speed_walk": 35,
+        "speed_fly": null,
+        "speed_swim": null,
+        "bonus_type": "Custom",
+        "bonus_value": { "STR": 2, "CON": 1 }
+    },
+    {
+        "name": "Locathah",
+        "size": ["Medium"],
+        "speed_walk": 30,
+        "speed_fly": null,
+        "speed_swim": 30,
+        "bonus_type": "Custom",
+        "bonus_value": { "STR": 2, "WIS": 1 }
+    },
+    {
+        "name": "Lizardfolk",
+        "size": ["Medium"],
+        "speed_walk": 30,
+        "speed_fly": null,
+        "speed_swim": 30,
+        "bonus_type": "Custom",
+        "bonus_value": { "CON": 2, "WIS": 1 }
+    },
+    {
+        "name": "Minotaur",
+        "size": ["Medium"],
+        "speed_walk": 30,
+        "speed_fly": null,
+        "speed_swim": null,
+        "bonus_type": "Custom",
+        "bonus_value": { "STR": 2, "CON": 1 }
+    },
+    {
+        "name": "Orc",
+        "size": ["Medium"],
+        "speed_walk": 30,
+        "speed_fly": null,
+        "speed_swim": null,
+        "bonus_type": "Custom",
+        "bonus_value": { "STR": 2, "CON": 1 }
+    },
+    {
+        "name": "Half-orc",
+        "size": ["Medium"],
+        "speed_walk": 30,
+        "speed_fly": null,
+        "speed_swim": null,
+        "bonus_type": "Custom",
+        "bonus_value": { "STR": 2, "CON": 1 }
+    },
+    {
+        "name": "Halfling",
+        "size": ["Small"],
+        "speed_walk": 25,
+        "speed_fly": null,
+        "speed_swim": null,
+        "bonus_type": "Custom",
+        "bonus_value": { "DEX": 2 }
+    },
+    {
+        "name": "Half-elf",
+        "size": ["Medium"],
+        "speed_walk": 30,
+        "speed_fly": null,
+        "speed_swim": null,
+        "bonus_type": "Custom",
+        "bonus_value": { "CHA": 2, "Any": 1 }
+    },
+    {
+        "name": "Satyr",
+        "size": ["Medium"],
+        "speed_walk": 30,
+        "speed_fly": null,
+        "speed_swim": null,
+        "bonus_type": "Custom",
+        "bonus_value": { "CHA": 2, "DEX": 1 }
+    },
+    {
+        "name": "Owlin",
+        "size": ["Medium"],
+        "speed_walk": 30,
+        "speed_fly": 30,
+        "speed_swim": null,
+        "bonus_type": "Custom",
+        "bonus_value": { "DEX": 2, "WIS": 1 }
+    },
+    {
+        "name": "Tabaxi",
+        "size": ["Medium"],
+        "speed_walk": 30,
+        "speed_fly": null,
+        "speed_swim": null,
+        "bonus_type": "Custom",
+        "bonus_value": { "DEX": 2, "CHA": 1 }
+    },
+    {
+        "name": "Tiefling",
+        "size": ["Medium"],
+        "speed_walk": 30,
+        "speed_fly": null,
+        "speed_swim": null,
+        "bonus_type": "Custom",
+        "bonus_value": { "CHA": 2, "INT": 1 }
+    },
+    {
+        "name": "Tortle",
+        "size": ["Medium"],
+        "speed_walk": 30,
+        "speed_fly": null,
+        "speed_swim": null,
+        "bonus_type": "Custom",
+        "bonus_value": { "STR": 2, "CON": 1 }
+    },
+    {
+        "name": "Triton",
+        "size": ["Medium"],
+        "speed_walk": 30,
+        "speed_fly": null,
+        "speed_swim": 30,
+        "bonus_type": "Custom",
+        "bonus_value": { "STR": 1, "CON": 1, "CHA": 1 }
+    },
+    {
+        "name": "Firbolg",
+        "size": ["Medium"],
+        "speed_walk": 30,
+        "speed_fly": null,
+        "speed_swim": null,
+        "bonus_type": "Custom",
+        "bonus_value": { "STR": 1, "WIS": 2 }
+    },
+    {
+        "name": "Fairy",
+        "size": ["Tiny"],
+        "speed_walk": 30,
+        "speed_fly": 30,
+        "speed_swim": null,
+        "bonus_type": "Custom",
+        "bonus_value": { "CHA": 2 }
+    },
+    {
+        "name": "Human",
+        "size": ["Medium"],
+        "speed_walk": 30,
+        "speed_fly": null,
+        "speed_swim": null,
+        "bonus_type": "AllStats",
+        "bonus_value": "1"
+    },
+    {
+        "name": "Elf",
+        "size": ["Medium"],
+        "speed_walk": 30,
+        "speed_fly": null,
+        "speed_swim": null,
+        "bonus_type": "Custom",
+        "bonus_value": { "DEX": 2 }
+    },
+    {
+        "name": "Yuan-ti Pureblood",
+        "size": ["Medium"],
+        "speed_walk": 30,
+        "speed_fly": null,
+        "speed_swim": null,
+        "bonus_type": "Custom",
+        "bonus_value": { "CHA": 2, "INT": 1 }
+    }
 ]
