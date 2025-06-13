@@ -1,6 +1,7 @@
 import disnake
 from disnake.ui import View, Button, Select
 import json
+import sqlite3
 
 MAGIC_CLASSES = {
     "Wizard", "Sorcerer", "Cleric", "Druid", "Warlock", "Bard", "Paladin", "Ranger", "Artificer"
@@ -15,6 +16,16 @@ def get_spells_for_class(class_name, level):
         name for name, data in SPELLS.items()
         if class_name in data.get("classes", []) and data["level"] <= level
     ]
+
+def update_character_level_and_hp(user_id: int, new_level: int, new_hp: int):
+    conn = sqlite3.connect("characters.db")
+    cursor = conn.cursor()
+    cursor.execute(
+        "UPDATE characters SET level = ?, hp = ? WHERE user_id = ?",
+        (new_level, new_hp, user_id)
+    )
+    conn.commit()
+    conn.close()
 
 def setup_spell_leveling(bot, conn, cursor):
     class SpellSelectView(View):

@@ -1,5 +1,5 @@
 import disnake
-from disnake.ui import View, Select
+from disnake.ui import View, Select,Button
 from disnake import SelectOption
 import json
 
@@ -29,22 +29,39 @@ class SpellSelectView(View):
 
         self.select = Select(
             placeholder=f"Выберите до {max_spells} заклинаний",
-            options=options[:25],  # Ограничение Discord
+            options=options[:25],
             min_values=1,
             max_values=max_spells
         )
         self.select.callback = self.select_callback
         self.add_item(self.select)
 
+        # Добавляем кнопку подтверждения
+        self.confirm_button = Button(label="Подтвердить выбор", style=disnake.ButtonStyle.success)
+        self.confirm_button.callback = self.confirm_callback
+        self.add_item(self.confirm_button)
+
     async def select_callback(self, inter: disnake.MessageInteraction):
         if inter.user.id != self.inter.user.id:
             await inter.response.send_message("Это не для вас!", ephemeral=True)
             return
 
+        # Обновляем выбранные заклинания, но не закрываем вью и не отправляем сообщение
         self.selected_spells = self.select.values
+        await inter.response.defer()  # просто подтверждаем интеракшн, чтобы не было "ошибки"
+
+    async def confirm_callback(self, inter: disnake.MessageInteraction):
+        if inter.user.id != self.inter.user.id:
+            await inter.response.send_message("Это не для вас!", ephemeral=True)
+            return
+
+        if not self.selected_spells:
+            await inter.response.send_message("Пожалуйста, выберите хотя бы одно заклинание перед подтверждением.", ephemeral=True)
+            return
+
         await inter.response.edit_message(
             content=f"Вы выбрали: {', '.join(self.selected_spells)}",
-            view=None
+            view=None  # закрываем вью после подтверждения
         )
         self.stop()
 

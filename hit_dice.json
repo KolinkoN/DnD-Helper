@@ -1,0 +1,15 @@
+{
+  "Bard": 8,
+  "Barbarian": 12,
+  "Fighter": 10,
+  "Wizard": 6,
+  "Druid": 8,
+  "Cleric": 8,
+  "Artificer": 8,
+  "Warlock": 8,
+  "Monk": 8,
+  "Paladin": 10,
+  "Rogue": 8,
+  "Ranger": 10,
+  "Sorcerer": 6
+}

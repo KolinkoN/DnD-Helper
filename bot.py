@@ -33,8 +33,10 @@ cursor.execute("""CREATE TABLE IF NOT EXISTS characters (
     intelligence INTEGER,
     wisdom INTEGER,
     charisma INTEGER,
-    level INTEGER DEFAULT 1
+    level INTEGER DEFAULT 1,
+    hp INTEGER DEFAULT 0
 )""")
+
 cursor.execute("""
 CREATE TABLE IF NOT EXISTS character_spells (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
