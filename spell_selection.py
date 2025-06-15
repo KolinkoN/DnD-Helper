@@ -1,5 +1,5 @@
 import disnake
-from disnake.ui import View, Select,Button
+from disnake.ui import View, Select, Button
 from disnake import SelectOption
 import json
 
@@ -31,12 +31,11 @@ class SpellSelectView(View):
             placeholder=f"Выберите до {max_spells} заклинаний",
             options=options[:25],
             min_values=1,
-            max_values=max_spells
+            max_values=max_spells if max_spells > 0 else 1
         )
         self.select.callback = self.select_callback
         self.add_item(self.select)
 
-        # Добавляем кнопку подтверждения
         self.confirm_button = Button(label="Подтвердить выбор", style=disnake.ButtonStyle.success)
         self.confirm_button.callback = self.confirm_callback
         self.add_item(self.confirm_button)
@@ -46,9 +45,8 @@ class SpellSelectView(View):
             await inter.response.send_message("Это не для вас!", ephemeral=True)
             return
 
-        # Обновляем выбранные заклинания, но не закрываем вью и не отправляем сообщение
         self.selected_spells = self.select.values
-        await inter.response.defer()  # просто подтверждаем интеракшн, чтобы не было "ошибки"
+        await inter.response.defer()
 
     async def confirm_callback(self, inter: disnake.MessageInteraction):
         if inter.user.id != self.inter.user.id:
@@ -56,25 +54,27 @@ class SpellSelectView(View):
             return
 
         if not self.selected_spells:
-            await inter.response.send_message("Пожалуйста, выберите хотя бы одно заклинание перед подтверждением.", ephemeral=True)
+            await inter.response.send_message("Пожалуйста, выберите хотя бы одно заклинание перед подтверждением.",
+                                              ephemeral=True)
             return
 
         await inter.response.edit_message(
             content=f"Вы выбрали: {', '.join(self.selected_spells)}",
-            view=None  # закрываем вью после подтверждения
+            view=None
         )
         self.stop()
 
 
-async def handle_spell_selection(inter, character_name, char_class, level, max_spells=None, stat_mod=3, existing_spells=None):
+async def handle_spell_selection(inter, character_name, char_class, level, max_spells=None, stat_mod=3,
+                                 existing_spells=None):
     limits = spell_limits.get(char_class)
     if not limits:
         print(f"[INFO] Класс {char_class} не использует заклинания на уровне {level}.")
         return []
 
     if max_spells is None:
-        if "known_spells" in limits:
-            max_spells = limits["known_spells"].get(str(level), 0)
+        if "known_spells" in limits and isinstance(limits["known_spells"], list):
+            max_spells = limits["known_spells"][level] if level < len(limits["known_spells"]) else 0
         elif "prepared_spells" in limits:
             try:
                 max_spells = eval(
@@ -92,13 +92,13 @@ async def handle_spell_selection(inter, character_name, char_class, level, max_s
         if char_class in spell.get("classes", []) and spell["level"] <= level and spell["level"] > 0
     ]
 
-    # Исключаем уже имеющиеся заклинания из доступных
     if existing_spells:
         available_spells = [spell for spell in available_spells if spell not in existing_spells]
 
     if not available_spells or max_spells == 0:
         if not inter.response.is_done():
-            await inter.response.send_message("Нет доступных заклинаний или ваш класс их не использует.", ephemeral=True)
+            await inter.response.send_message("Нет доступных заклинаний или ваш класс их не использует.",
+                                              ephemeral=True)
         else:
             await inter.followup.send("Нет доступных заклинаний или ваш класс их не использует.", ephemeral=True)
         return []
@@ -121,14 +121,50 @@ async def handle_spell_selection(inter, character_name, char_class, level, max_s
     return view.selected_spells
 
 
+async def handle_cantrip_selection(inter, character_name, char_class, level, existing_spells=None):
+    cantrip_count = await get_cantrip_count(char_class, level)
+    if cantrip_count == 0:
+        await inter.response.send_message("Ваш класс не может использовать заговоры.", ephemeral=True)
+        return []
+
+    # Получаем список заговоров
+    available_cantrips = [
+        name for name, spell in all_spells.items()
+        if char_class in spell.get("classes", []) and spell["level"] == 0
+    ]
+
+    if existing_spells:
+        available_cantrips = [spell for spell in available_cantrips if spell not in existing_spells]
+
+    if not available_cantrips:
+        await inter.response.send_message("Нет доступных заговоров для выбора.", ephemeral=True)
+        return []
+
+    # Если можно выбрать все
+    if cantrip_count == -1:
+        cantrip_count = len(available_cantrips)
+
+    view = SpellSelectView(inter, character_name, char_class, available_cantrips, cantrip_count)
+    await inter.response.send_message(
+        f"Выберите до {cantrip_count} заговоров (0 уровень) для {char_class}:",
+        view=view,
+        ephemeral=True
+    )
+    await view.wait()
+    return view.selected_spells
+
+
 async def get_cantrip_count(char_class, level):
     limits = spell_limits.get(char_class)
     if not limits:
         return 0
 
     if limits.get("cantrips") == "all":
-        return -1  # Специальное значение: "все заговоры"
+        return -1
     elif isinstance(limits.get("cantrips"), list):
-        return limits["cantrips"][level]
+        if level < len(limits["cantrips"]):
+            return limits["cantrips"][level]
+        else:
+            return 0
     else:
         return 0

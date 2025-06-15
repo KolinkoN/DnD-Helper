@@ -1,5 +1,6 @@
 import disnake
 from disnake.ui import View, Button, Select
+import random
 import json
 import sqlite3
 
@@ -7,9 +8,11 @@ MAGIC_CLASSES = {
     "Wizard", "Sorcerer", "Cleric", "Druid", "Warlock", "Bard", "Paladin", "Ranger", "Artificer"
 }
 
-
 with open("spells.json", "r", encoding="utf-8") as f:
     SPELLS = json.load(f)
+
+def get_modifier(stat_value: int) -> int:
+    return (stat_value - 10) // 2
 
 def get_spells_for_class(class_name, level):
     return [
@@ -26,6 +29,52 @@ def update_character_level_and_hp(user_id: int, new_level: int, new_hp: int):
     )
     conn.commit()
     conn.close()
+
+def perform_level_up(cursor, character_name: str):
+    character = cursor.execute(
+        "SELECT level, hp, constitution, char_class, user_id FROM characters WHERE name = ?",
+        (character_name,)
+    ).fetchone()
+
+    if not character:
+        return None, "❌ Персонаж не найден."
+
+    current_level, current_hp, con_stat, char_class, user_id = character
+
+    if current_level >= 20:
+        return None, f"❌ `{character_name}` уже достиг максимального уровня (20)."
+
+    new_level = current_level + 1
+
+    HIT_DICE = {
+        "barbarian": 12, "fighter": 10, "paladin": 10, "ranger": 10,
+        "cleric": 8, "druid": 8, "bard": 8, "monk": 8,
+        "rogue": 8, "artificer": 8, "wizard": 6, "sorcerer": 6, "warlock": 8
+    }
+
+    hit_die = HIT_DICE.get(char_class.lower())
+    if hit_die is None:
+        return None, f"⚠️ Неизвестный класс `{char_class}`."
+
+    con_mod = get_modifier(con_stat)
+    roll = random.randint(1, hit_die)
+    hp_gain = max(1, roll + con_mod)
+    new_hp = current_hp + hp_gain
+
+    cursor.execute(
+        "UPDATE characters SET level = ?, hp = ? WHERE name = ?",
+        (new_level, new_hp, character_name)
+    )
+
+    return {
+        "new_level": new_level,
+        "hp_gain": hp_gain,
+        "roll": roll,
+        "con_mod": con_mod,
+        "new_hp": new_hp,
+        "char_class": char_class,
+        "user_id": user_id
+    }, None
 
 def setup_spell_leveling(bot, conn, cursor):
     class SpellSelectView(View):

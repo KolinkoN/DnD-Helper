@@ -6,13 +6,12 @@ import leveling_system
 from disnake.ext import commands
 from disnake.ui import View, Button
 from disnake import ButtonStyle
-from spell_selection import handle_spell_selection, SpellSelectView
-from hp_calculator import calculate_starting_hp
+from spell_selection import SpellSelectView,handle_spell_selection
 
 
 with open("races.json", "r", encoding="utf-8") as f:
     races_data = json.load(f)
-# Преобразуем в словарь по имени
+
 races_by_name = {race["name"]: race for race in races_data}
 with open("hit_dice.json", "r") as f:
     HIT_DICE = json.load(f)
@@ -21,7 +20,7 @@ def get_modifier(stat_value: int) -> int:
     return (stat_value - 10) // 2
 
 def get_user_character_names():
-    # Возвращаем имена персонажей из базы для всех пользователей (используется для autocomplete)
+
     with sqlite3.connect("bot.db") as conn:
         cursor = conn.cursor()
         result = cursor.execute("SELECT name FROM characters").fetchall()
@@ -269,31 +268,25 @@ def setup(bot, conn, cursor, races_by_name):
                 pass
 
     @bot.slash_command(name="create_character", description="Создать персонажа", guild_ids=[1378783701139198083])
-    async def create_character(inter: disnake.ApplicationCommandInteraction, name: str,
-                               race: str = commands.Param(autocomplete=True)):
+    async def create_character(
+            inter: disnake.ApplicationCommandInteraction,
+            name: str,
+            race: str = commands.Param(autocomplete=True)
+    ):
         await inter.response.defer(ephemeral=True)
+
         exists = cursor.execute("SELECT 1 FROM characters WHERE user_id = ?", (inter.user.id,)).fetchone()
         if exists:
-            if not inter.response.is_done():
-                await inter.response.send_message("У вас уже есть персонаж!", ephemeral=True)
-            else:
-                await inter.followup.send("У вас уже есть персонаж!", ephemeral=True)
+            await inter.followup.send("У вас уже есть персонаж!", ephemeral=True)
             return
 
         race_data = races_by_name.get(race)
         if not race_data:
-            if not inter.response.is_done():
-                await inter.response.send_message("Раса не найдена.", ephemeral=True)
-            else:
-                await inter.followup.send("Раса не найдена.", ephemeral=True)
+            await inter.followup.send("Раса не найдена.", ephemeral=True)
             return
 
         view = ClassSelectView(inter, name, race, race_data)
-
-        if not inter.response.is_done():
-            await inter.response.send_message(content="Выберите класс персонажа:", view=view, ephemeral=True)
-        else:
-            await inter.followup.send(content="Выберите класс персонажа:", view=view, ephemeral=True)
+        await inter.followup.send(content="Выберите класс персонажа:", view=view, ephemeral=True)
 
     @create_character.autocomplete("race")
     async def autocomplete_race(inter: disnake.ApplicationCommandInteraction, user_input: str):
@@ -424,14 +417,14 @@ def setup(bot, conn, cursor, races_by_name):
             ).fetchone()
 
             if not character:
-                await inter.response.send_message(f"Персонаж `{character_name}` не найден.", ephemeral=True)
+                await inter.response.send_message(f"Персонаж {character_name} не найден.", ephemeral=True)
                 return
 
             current_level, current_hp, con_stat, char_class, user_id = character
 
             if current_level >= 20:
                 await inter.response.send_message(
-                    f"❌ `{character_name}` уже достиг максимального уровня (20).",
+                    f"❌ {character_name} уже достиг максимального уровня (20).",
                     ephemeral=True
                 )
                 return
@@ -446,7 +439,7 @@ def setup(bot, conn, cursor, races_by_name):
 
             hit_die = HIT_DICE.get(char_class.lower())
             if hit_die is None:
-                await inter.response.send_message(f"⚠️ Неизвестный класс `{char_class}`.", ephemeral=True)
+                await inter.response.send_message(f"⚠️ Неизвестный класс {char_class}.", ephemeral=True)
                 return
 
             con_mod = get_modifier(con_stat)
@@ -480,7 +473,7 @@ def setup(bot, conn, cursor, races_by_name):
             conn_local.commit()
 
         msg = (
-            f"✅ Уровень персонажа `{character_name}` повышен до {new_level}!\n"
+            f"✅ Уровень персонажа {character_name} повышен до {new_level}!\n"
             f"❤️ HP увеличено на {hp_gain} (🎲 {roll} + CON {con_mod}) и теперь составляет {new_hp}."
         )
         if selected_spells:
