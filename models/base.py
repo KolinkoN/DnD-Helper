@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 from enum import Enum
+from models.coords import Coords
 class Races(Enum):
     AARAKOCRA = 'Aarakocra'
     AASIMAR = 'Aasimar'
@@ -43,10 +44,35 @@ class Races(Enum):
     ELF = 'Elf'
     YUAN_TI_PUREBLOOD = 'Yuan-ti Pureblood'
 
-class Entity(ABC):
+class BaseEntity(ABC):
 
     current_hp: int
     max_hp: int
 
     name: str
-    entity_type: str
+    entity_type: Races
+    level: int
+    armor_class: int
+    speed: int
+    position: Coords
+
+    @abstractmethod
+    def get_position(self):
+        pass
+
+    @abstractmethod
+    def take_damage(self):
+        pass
+
+    @abstractmethod
+    def move_to(self):
+        pass
+
+    @abstractmethod
+    def heal(self):
+        pass
+
+    
+
+
+
