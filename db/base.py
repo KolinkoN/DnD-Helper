@@ -77,5 +77,37 @@ class DB(metaclass=NoMethodsMeta):
         @classmethod
         def delete(cls):
             return super().delete()
+        
+
+    class Scenes(DBSubClass):
+        table = "scenes"
+
+        @classmethod
+        def get(cls):
+            return super().get()
+        
+        @classmethod
+        def update(cls):
+            return super().update()
+        
+        @classmethod
+        def delete(cls):
+            return super().delete()
+        
+    class Campaign(DBSubClass):
+        table = "campaign"
+
+        @classmethod
+        def get(cls):
+            return super().get()
+        
+        @classmethod
+        def update(cls):
+            return super().update()
+        
+        @classmethod
+        def delete(cls):
+            return super().delete()
+
 
         
